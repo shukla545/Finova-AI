@@ -13,8 +13,8 @@ import {
 const Sidebar = () => {
   const menuItems = [
     { name: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
-    { name: "Resume Analysis", icon: FileSearch, path: "/dashboard/resume-engine" },
-    { name: "Resume Builder", icon: FilePlus, path: "/dashboard/build" },
+    { name: "News Insight", icon: FileSearch, path: "/dashboard/news" },
+    { name: "Truth Agent", icon: FilePlus, path: "/dashboard/true" },
     { name: "Prepare with AI", icon: Target, path: "/dashboard/prepare" },
           { name: "Confidence Lens", icon: Mail, path: "/dashboard/off" },
     { name: "Admin Controls", icon: Shield, path: "/dashboard/admin" },
