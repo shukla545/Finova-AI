@@ -1,0 +1,25 @@
+/* ─── FinPilot AI Global Animations ─────────────────────────────────────── */
+/* Add these to your main index.css or App.css */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap');
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes bounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30%            { transform: translateY(-6px); opacity: 1; }
+}
+
+/* Smooth scrollbar for chat area */
+.finpilot-messages::-webkit-scrollbar {
+  width: 4px;
+}
+.finpilot-messages::-webkit-scrollbar-track {
+  background: transparent;
+}
+.finpilot-messages::-webkit-scrollbar-thumb {
+  background: rgba(99, 102, 241, 0.2);
+  border-radius: 2px;
+}

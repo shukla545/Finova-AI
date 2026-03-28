@@ -6,7 +6,7 @@ import DashboardLayout from "./components/layout/DashboardLayout";
 import NewsInsight from "./pages/NewsInsight";
 import TruthAgent from "./pages/TruthAgent";
 import MyPort from "./pages/MyPort";
-import Bot from "./pages/Bot";
+import Bot from "./pages/FinPilot";
 import Settings from "./pages/Settings";
 
 
