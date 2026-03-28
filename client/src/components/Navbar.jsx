@@ -1,6 +1,6 @@
 import React, { useState, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
-import CollegeAccountPopup from "./CollegeAccountPopup";
+
 
 const Navbar = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -61,13 +61,6 @@ const Navbar = () => {
             G
           </button>
 
-          <CollegeAccountPopup
-            isOpen={isPopupOpen}
-            onClose={() => setIsPopupOpen(false)}
-            triggerRef={buttonRef}
-            onMouseEnter={handleMouseEnter} // keep popup open when hovering on it
-            onMouseLeave={handleMouseLeave}
-          />
         </div>
       </nav>
     </header>

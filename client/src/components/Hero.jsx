@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useClerk, useUser, SignInButton } from "@clerk/clerk-react";
-import Trusted from "./Trusted";
+import { useClerk, useUser, SignInButton } from "@clerk/react";
+
 
 const Hero = () => {
   const { signOut } = useClerk();
@@ -66,7 +66,7 @@ const Hero = () => {
           </div>
         </div>
       </section>
-         <Trusted />
+
     </>
   );
 };
