@@ -1,36 +1,20 @@
 import express from "express";
-import dotenv from "dotenv";
-import cookieParser from "cookie-parser";
 import cors from "cors";
-import { connectDB } from "./config/db.js";
-
-
-dotenv.config();
+import newsRoutes from "./routes/newsRoutes.js";
 
 const app = express();
 
-// ✅ ONLY THIS CHANGED
-app.use(cors({
-  origin: "http://localhost:5000",
-  credentials: true,
-}));
-
-app.use(express.json({ limit: "10mb" }));
-app.use(cookieParser());
-
-await connectDB();
+app.use(cors());
+app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.send("Server is running!");
+  res.send("Finance News Dashboard API running");
 });
 
+app.use("/api/news", newsRoutes);
 
-const PORT = process.env.PORT || 5000;
+const PORT = 5000;
 
-if (process.env.NODE_ENV !== "production") {
-  app.listen(PORT, () =>
-    console.log("Server is running on PORT: " + PORT)
-  );
-}
-
-export default app;
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+});
