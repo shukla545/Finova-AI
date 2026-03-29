@@ -493,8 +493,8 @@ export default function NewsInsight() {
       <div className="mx-auto max-w-[1500px]">
         <div className="mb-6 flex flex-col gap-4 rounded-[24px] border border-blue-200 bg-white p-5 shadow-sm md:flex-row md:items-center md:justify-between">
           <div>
-            <p className="text-sm text-gray-500">28 March</p>
-            <h1 className="mt-1 text-4xl font-bold text-gray-900">Good afternoon</h1>
+            <p className="text-sm text-gray-500">29 March</p>
+            <h1 className="mt-1 text-4xl font-bold text-gray-900">Good Morning</h1>
           </div>
 
           <div className="flex items-center gap-3">
