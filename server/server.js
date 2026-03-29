@@ -9,6 +9,7 @@ import portfolioRoutes from "./routes/portfolioRoutes.js";
 import newsRoutes from "./routes/newsRoutes.js";
 import smsAlertRoutes from "./routes/smsAlertRoutes.js";
 import finPilotRoutes from "./routes/finPilotRoutes.js";
+import chatRoutes from "./routes/chatRoutes.js";
  
 dotenv.config();
 
@@ -42,8 +43,7 @@ app.use('/api/truth', truthRoutes);
 app.use("/api/portfolio", portfolioRoutes);
 app.use("/api/sms", smsAlertRoutes);
 app.use("/api/finpilot", finPilotRoutes);
-
-
+app.use("/api/chat", chatRoutes);
 app.use("/api/news", newsRoutes);
 
 

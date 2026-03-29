@@ -8,6 +8,7 @@ import TruthAgent from "./pages/TruthAgent";
 import MyPort from "./pages/MyPort";
 import Bot from "./pages/FinPilot";
 import Settings from "./pages/Settings";
+import ChatBot from "./components/ChatBot";
 
 
 
@@ -32,6 +33,7 @@ const App = () => {
           
         </Route>
       </Routes>
+            <ChatBot />
     
     </>
   );
