@@ -12,8 +12,8 @@ import {
 const Sidebar = () => {
   const menuItems = [
     { name: "My Portfolio", icon: LayoutDashboard, path: "/dashboard" },
-    { name: "Market Pulse", icon: TrendingUp, path: "/dashboard/news" },
     { name: "Truth Agent", icon: ShieldCheck, path: "/dashboard/true" },
+        { name: "Market Pulse", icon: TrendingUp, path: "/dashboard/news" },
         { name: "Finpilot AI ", icon: Bot , path: "/dashboard/bot" },
     { name: "Ingest Settings", icon: Database, path: "/dashboard/ingest" },
      { name: "Go Back", icon: ArrowLeft , path: "/" },
