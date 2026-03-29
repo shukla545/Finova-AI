@@ -181,102 +181,89 @@ function PortfolioPanel({ portfolio }) {
   );
 }
 
-// ─── Voice Overlay ─────────────────────────────────────────────────────────
-function VoiceOverlay({ isListening, isSpeaking, transcript, onStop, onClose }) {
-  const bars = Array.from({ length: 28 });
+// ─── Inline Voice Banner (not full overlay) ────────────────────────────────
+function VoiceBanner({ isListening, isSpeaking, transcript, onStop, onClose }) {
+  const bars = Array.from({ length: 32 });
+  const active = isListening || isSpeaking;
+
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      style={styles.voiceOverlay}
+      initial={{ opacity: 0, y: -12 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -12 }}
+      transition={{ duration: 0.3, ease: "easeOut" }}
+      style={styles.voiceBanner}
     >
-      {/* Dark blurred bg */}
-      <div style={styles.voiceBg} />
-
-      <div style={styles.voiceCard}>
-        {/* Orb */}
-        <div style={styles.orbWrap}>
+      {/* Left: orb + label */}
+      <div style={styles.vbLeft}>
+        <div style={styles.vbOrbWrap}>
           <motion.div
-            animate={isListening ? { scale: [1, 1.18, 1], opacity: [0.5, 1, 0.5] } : isSpeaking ? { scale: [1, 1.1, 1] } : {}}
-            transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
-            style={styles.orbGlow}
+            animate={active ? { scale: [1, 1.4, 1], opacity: [0.4, 0.9, 0.4] } : {}}
+            transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+            style={styles.vbOrbGlow}
           />
-          <div style={styles.orb}>
-            <svg width="38" height="38" viewBox="0 0 24 24" fill="none">
-              <path d="M12 2a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3z" fill="#fff" opacity="0.95"/>
-              <path d="M19 10v1a7 7 0 0 1-14 0v-1M12 18v4M8 22h8" stroke="#fff" strokeWidth="1.8" strokeLinecap="round"/>
+          <div style={{
+            ...styles.vbOrb,
+            background: isListening
+              ? "linear-gradient(135deg,#7c3aed,#a855f7)"
+              : isSpeaking
+              ? "linear-gradient(135deg,#0ea5e9,#6366f1)"
+              : "linear-gradient(135deg,#334155,#475569)",
+          }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M12 2a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3z" fill="#fff"/>
+              <path d="M19 10v1a7 7 0 0 1-14 0v-1M12 18v4M8 22h8" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
             </svg>
           </div>
         </div>
-
-        {/* Label */}
-        <div style={styles.voiceLabel}>
-          {isListening ? "Listening…" : isSpeaking ? "FinPilot is speaking…" : "Voice Assistant"}
+        <div>
+          <div style={styles.vbLabel}>
+            {isListening ? "Listening…" : isSpeaking ? "FinPilot speaking…" : "Voice"}
+          </div>
+          {transcript && (
+            <div style={styles.vbTranscript}>"{transcript}"</div>
+          )}
         </div>
+      </div>
 
-        {/* Waveform bars */}
-        <div style={styles.waveRow}>
-          {bars.map((_, i) => {
-            const active = isListening || isSpeaking;
-            const center = Math.abs(i - 13.5) / 13.5;
-            const baseH = active ? 6 + (1 - center) * 28 : 4;
-            return (
-              <motion.div
-                key={i}
-                animate={active ? {
-                  height: [
-                    baseH,
-                    baseH + Math.random() * 24 * (1 - center * 0.5),
-                    baseH,
-                  ],
-                } : { height: 4 }}
-                transition={active ? {
-                  duration: 0.5 + Math.random() * 0.5,
-                  repeat: Infinity,
-                  delay: i * 0.03,
-                  ease: "easeInOut",
-                } : {}}
-                style={{
-                  ...styles.waveBar,
-                  background: isListening
-                    ? `hsl(${260 + i * 4}, 80%, 65%)`
-                    : isSpeaking
-                    ? `hsl(${180 + i * 6}, 80%, 55%)`
-                    : "rgba(255,255,255,0.2)",
-                }}
-              />
-            );
-          })}
-        </div>
+      {/* Center: waveform */}
+      <div style={styles.vbWaveRow}>
+        {bars.map((_, i) => {
+          const center = Math.abs(i - 15.5) / 15.5;
+          const baseH = active ? 4 + (1 - center) * 20 : 3;
+          return (
+            <motion.div
+              key={i}
+              animate={active ? {
+                height: [baseH, baseH + (1 - center * 0.6) * 18, baseH],
+              } : { height: 3 }}
+              transition={active ? {
+                duration: 0.45 + (i % 5) * 0.08,
+                repeat: Infinity,
+                delay: i * 0.025,
+                ease: "easeInOut",
+              } : {}}
+              style={{
+                ...styles.vbBar,
+                background: isListening
+                  ? `hsl(${270 + i * 3}, 75%, 65%)`
+                  : isSpeaking
+                  ? `hsl(${195 + i * 4}, 80%, 55%)`
+                  : "rgba(255,255,255,0.15)",
+              }}
+            />
+          );
+        })}
+      </div>
 
-        {/* Transcript preview */}
-        {transcript && (
-          <motion.div
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            style={styles.transcriptBox}
-          >
-            "{transcript}"
-          </motion.div>
+      {/* Right: buttons */}
+      <div style={styles.vbRight}>
+        {(isListening || isSpeaking) && (
+          <button onClick={onStop} style={styles.vbStopBtn} title="Stop">
+            ⏹ Stop
+          </button>
         )}
-
-        {/* Stop / Close buttons */}
-        <div style={styles.voiceBtnRow}>
-          {isListening && (
-            <button onClick={onStop} style={styles.voiceStopBtn}>
-              <span style={{ fontSize: 20 }}>⏹</span>
-              <span>Stop & Send</span>
-            </button>
-          )}
-          {isSpeaking && (
-            <button onClick={onStop} style={styles.voiceStopBtn}>
-              <span style={{ fontSize: 20 }}>⏹</span>
-              <span>Stop Speaking</span>
-            </button>
-          )}
-          <button onClick={onClose} style={styles.voiceCloseBtn}>✕ Close</button>
-        </div>
+        <button onClick={onClose} style={styles.vbCloseBtn} title="Close voice">✕</button>
       </div>
     </motion.div>
   );
@@ -295,18 +282,32 @@ function ChatPanel({ sessionId, portfolio }) {
   const [isTyping, setIsTyping] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const [showVoiceOverlay, setShowVoiceOverlay] = useState(false);
+  const [showVoiceBanner, setShowVoiceBanner] = useState(false);
   const [transcript, setTranscript] = useState("");
   const bottomRef = useRef(null);
   const recognitionRef = useRef(null);
+  // useRef so sendMessage always reads the CURRENT value, never stale
+  const voiceBannerRef = useRef(false);
+
+  const setVoiceBanner = (val) => {
+    voiceBannerRef.current = val;
+    setShowVoiceBanner(val);
+  };
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isTyping]);
 
+  // Stop AI speaking immediately when user starts talking
+  const stopAISpeaking = () => {
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
+    setIsSpeaking(false);
+  };
+
   const sendMessage = async (text) => {
     if (!text.trim() || isTyping) return;
     setTranscript("");
+
     const userMsg = { role: "user", text: text.trim(), id: Date.now() };
     setMessages(prev => [...prev, userMsg]);
     setInput("");
@@ -323,11 +324,35 @@ function ChatPanel({ sessionId, portfolio }) {
       if (data.success) {
         const aiMsg = { role: "assistant", text: data.response, id: Date.now() + 1 };
         setMessages(prev => [...prev, aiMsg]);
-        // Auto-speak if voice overlay is open
-        if (showVoiceOverlay) {
-          setIsSpeaking(true);
-          speak(data.response);
-          setTimeout(() => setIsSpeaking(false), data.response.length * 55);
+
+        // ✅ Use ref — never stale, always reads current value
+        if (voiceBannerRef.current) {
+          window.speechSynthesis.cancel(); // clear any previous
+          const utt = new SpeechSynthesisUtterance(data.response);
+          utt.rate = 1.0;
+          utt.pitch = 1;
+          // Wait for voices to load (needed on some browsers)
+          const setVoiceAndSpeak = () => {
+            const voices = window.speechSynthesis.getVoices();
+            const preferred = voices.find(v =>
+              v.name.includes("Google") || (v.lang === "en-US" && !v.name.includes("Zira"))
+            );
+            if (preferred) utt.voice = preferred;
+            utt.onstart = () => setIsSpeaking(true);
+            utt.onend = () => setIsSpeaking(false);
+            utt.onerror = () => setIsSpeaking(false);
+            setIsSpeaking(true);
+            window.speechSynthesis.speak(utt);
+          };
+          // Voices may not be ready immediately
+          if (window.speechSynthesis.getVoices().length > 0) {
+            setVoiceAndSpeak();
+          } else {
+            window.speechSynthesis.onvoiceschanged = () => {
+              window.speechSynthesis.onvoiceschanged = null;
+              setVoiceAndSpeak();
+            };
+          }
         }
       } else {
         throw new Error(data.error);
@@ -351,13 +376,14 @@ function ChatPanel({ sessionId, portfolio }) {
     }
   };
 
-  const startVoice = () => {
+  const startListening = () => {
     if (!("webkitSpeechRecognition" in window || "SpeechRecognition" in window)) {
       alert("Speech recognition not supported. Please use Chrome.");
       return;
     }
-    setShowVoiceOverlay(true);
+    stopAISpeaking();
     setTranscript("");
+    setVoiceBanner(true); // ✅ sets both state + ref
 
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     const recognition = new SpeechRecognition();
@@ -365,7 +391,10 @@ function ChatPanel({ sessionId, portfolio }) {
     recognition.interimResults = true;
     recognition.lang = "en-US";
 
+    recognition.onstart = () => { stopAISpeaking(); };
+
     recognition.onresult = (e) => {
+      stopAISpeaking();
       const t = Array.from(e.results).map(r => r[0].transcript).join("");
       setTranscript(t);
       if (e.results[e.results.length - 1].isFinal) {
@@ -380,20 +409,17 @@ function ChatPanel({ sessionId, portfolio }) {
     setIsListening(true);
   };
 
-  const stopVoiceOrSpeaking = () => {
+  const handleStop = () => {
     if (isListening) {
       recognitionRef.current?.stop();
       setIsListening(false);
     }
-    if (isSpeaking) {
-      window.speechSynthesis?.cancel();
-      setIsSpeaking(false);
-    }
+    stopAISpeaking();
   };
 
-  const closeVoiceOverlay = () => {
-    stopVoiceOrSpeaking();
-    setShowVoiceOverlay(false);
+  const closeVoiceBanner = () => {
+    handleStop();
+    setVoiceBanner(false); // ✅ sets both state + ref
     setTranscript("");
   };
 
@@ -406,19 +432,6 @@ function ChatPanel({ sessionId, portfolio }) {
       transition={{ duration: 0.5 }}
       style={{ ...styles.chatPanel, position: "relative" }}
     >
-      {/* Voice Overlay */}
-      <AnimatePresence>
-        {showVoiceOverlay && (
-          <VoiceOverlay
-            isListening={isListening}
-            isSpeaking={isSpeaking}
-            transcript={transcript}
-            onStop={stopVoiceOrSpeaking}
-            onClose={closeVoiceOverlay}
-          />
-        )}
-      </AnimatePresence>
-
       {/* Chat Header */}
       <div style={styles.chatHeader}>
         <div style={styles.chatHeaderLeft}>
@@ -428,7 +441,36 @@ function ChatPanel({ sessionId, portfolio }) {
             <div style={styles.chatStatus}>● Online</div>
           </div>
         </div>
+        {/* Speak button — top right */}
+        <motion.button
+          onClick={showVoiceBanner ? closeVoiceBanner : startListening}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          style={{
+            ...styles.speakHeaderBtn,
+            background: showVoiceBanner
+              ? "linear-gradient(135deg,#7c3aed,#a855f7)"
+              : "rgba(99,102,241,0.1)",
+            color: showVoiceBanner ? "#fff" : "#6366f1",
+            border: showVoiceBanner ? "none" : "1.5px solid rgba(99,102,241,0.3)",
+          }}
+        >
+          🎤 {showVoiceBanner ? "Close" : "Speak"}
+        </motion.button>
       </div>
+
+      {/* Voice Banner — slides in just below header */}
+      <AnimatePresence>
+        {showVoiceBanner && (
+          <VoiceBanner
+            isListening={isListening}
+            isSpeaking={isSpeaking}
+            transcript={transcript}
+            onStop={handleStop}
+            onClose={closeVoiceBanner}
+          />
+        )}
+      </AnimatePresence>
 
       {/* Messages */}
       <div style={styles.messageArea}>
@@ -475,21 +517,14 @@ function ChatPanel({ sessionId, portfolio }) {
         ))}
       </div>
 
-      {/* Input Row */}
+      {/* Input Row — mic button removed from here, now in header */}
       <div style={styles.inputRow}>
-        <button
-          onClick={startVoice}
-          style={styles.voiceBtn}
-          title="Open Voice Assistant"
-        >
-          🎤
-        </button>
         <textarea
           value={input}
           onChange={e => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Ask about your portfolio… (Enter to send)"
-          style={styles.chatInput}
+          style={{ ...styles.chatInput, borderRadius: 14 }}
           rows={1}
           disabled={isTyping}
         />
@@ -974,119 +1009,122 @@ const styles = {
     transition: "opacity 0.15s",
   },
 
-  // ─── Voice Overlay ──────────────────────────────────────────────────────────
-  voiceOverlay: {
-    position: "absolute",
-    inset: 0,
-    zIndex: 100,
+  // ─── Speak Header Button ────────────────────────────────────────────────────
+  speakHeaderBtn: {
     display: "flex",
     alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 0,
-  },
-  voiceBg: {
-    position: "absolute",
-    inset: 0,
-    background: "linear-gradient(160deg, #0d0d1a 0%, #0f0a2e 50%, #060d1f 100%)",
-    backdropFilter: "blur(16px)",
-  },
-  voiceCard: {
-    position: "relative",
-    zIndex: 1,
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    gap: 28,
-    padding: "48px 40px",
-    width: "100%",
-    maxWidth: 420,
-  },
-  orbWrap: {
-    position: "relative",
-    width: 110,
-    height: 110,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  orbGlow: {
-    position: "absolute",
-    inset: -16,
-    borderRadius: "50%",
-    background: "radial-gradient(circle, rgba(139,92,246,0.6) 0%, rgba(99,102,241,0.3) 50%, transparent 70%)",
-    filter: "blur(8px)",
-  },
-  orb: {
-    width: 90,
-    height: 90,
-    borderRadius: "50%",
-    background: "linear-gradient(135deg, #7c3aed, #6366f1, #a855f7)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    boxShadow: "0 0 40px rgba(139,92,246,0.6), 0 0 80px rgba(99,102,241,0.3)",
-    border: "2px solid rgba(255,255,255,0.15)",
-  },
-  voiceLabel: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: 700,
-    letterSpacing: 0.5,
-    textAlign: "center",
-    textShadow: "0 0 20px rgba(139,92,246,0.8)",
-  },
-  waveRow: {
-    display: "flex",
-    alignItems: "center",
-    gap: 3,
-    height: 60,
-  },
-  waveBar: {
-    width: 4,
-    borderRadius: 2,
-    minHeight: 4,
-    transition: "background 0.3s",
-  },
-  transcriptBox: {
-    background: "rgba(255,255,255,0.07)",
-    border: "1px solid rgba(255,255,255,0.12)",
-    borderRadius: 12,
-    padding: "10px 16px",
-    color: "rgba(255,255,255,0.8)",
-    fontSize: 14,
-    fontStyle: "italic",
-    textAlign: "center",
-    maxWidth: 340,
-    lineHeight: 1.5,
-  },
-  voiceBtnRow: {
-    display: "flex",
-    gap: 12,
-    flexWrap: "wrap",
-    justifyContent: "center",
-  },
-  voiceStopBtn: {
-    display: "flex",
-    alignItems: "center",
-    gap: 8,
-    background: "rgba(239,68,68,0.15)",
-    border: "1.5px solid rgba(239,68,68,0.5)",
+    gap: 6,
+    padding: "8px 16px",
     borderRadius: 100,
-    padding: "10px 22px",
-    color: "#fca5a5",
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: 700,
     cursor: "pointer",
     transition: "all 0.2s",
+    letterSpacing: 0.3,
   },
-  voiceCloseBtn: {
-    background: "rgba(255,255,255,0.07)",
-    border: "1.5px solid rgba(255,255,255,0.15)",
+
+  // ─── Voice Banner (inline strip below header) ───────────────────────────────
+  voiceBanner: {
+    display: "flex",
+    alignItems: "center",
+    gap: 12,
+    padding: "10px 20px",
+    background: "linear-gradient(135deg, #0d0d1a 0%, #0f0a2e 100%)",
+    borderBottom: "1px solid rgba(139,92,246,0.2)",
+    minHeight: 64,
+  },
+  vbLeft: {
+    display: "flex",
+    alignItems: "center",
+    gap: 10,
+    flexShrink: 0,
+    minWidth: 140,
+  },
+  vbOrbWrap: {
+    position: "relative",
+    width: 36,
+    height: 36,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0,
+  },
+  vbOrbGlow: {
+    position: "absolute",
+    inset: -6,
+    borderRadius: "50%",
+    background: "radial-gradient(circle, rgba(139,92,246,0.5) 0%, transparent 70%)",
+    filter: "blur(4px)",
+  },
+  vbOrb: {
+    width: 34,
+    height: 34,
+    borderRadius: "50%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    boxShadow: "0 0 16px rgba(139,92,246,0.5)",
+  },
+  vbLabel: {
+    color: "#e2e8f0",
+    fontSize: 13,
+    fontWeight: 700,
+    letterSpacing: 0.3,
+  },
+  vbTranscript: {
+    color: "rgba(196,181,253,0.8)",
+    fontSize: 11,
+    fontStyle: "italic",
+    marginTop: 2,
+    maxWidth: 160,
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+  },
+  vbWaveRow: {
+    flex: 1,
+    display: "flex",
+    alignItems: "center",
+    gap: 2.5,
+    height: 40,
+    overflow: "hidden",
+  },
+  vbBar: {
+    width: 3,
+    borderRadius: 2,
+    minHeight: 3,
+    flexShrink: 0,
+  },
+  vbRight: {
+    display: "flex",
+    alignItems: "center",
+    gap: 8,
+    flexShrink: 0,
+  },
+  vbStopBtn: {
+    background: "rgba(239,68,68,0.15)",
+    border: "1px solid rgba(239,68,68,0.4)",
     borderRadius: 100,
-    padding: "10px 22px",
-    color: "rgba(255,255,255,0.6)",
-    fontSize: 14,
-    fontWeight: 600,
+    padding: "6px 14px",
+    color: "#fca5a5",
+    fontSize: 12,
+    fontWeight: 700,
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    gap: 4,
+  },
+  vbCloseBtn: {
+    background: "rgba(255,255,255,0.07)",
+    border: "1px solid rgba(255,255,255,0.12)",
+    borderRadius: "50%",
+    width: 28,
+    height: 28,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    color: "rgba(255,255,255,0.5)",
+    fontSize: 12,
     cursor: "pointer",
   },
 };
