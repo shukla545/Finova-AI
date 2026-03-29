@@ -14,7 +14,7 @@ const Sidebar = () => {
     { name: "My Portfolio", icon: LayoutDashboard, path: "/dashboard" },
     { name: "Market Pulse", icon: TrendingUp, path: "/dashboard/news" },
     { name: "Truth Agent", icon: ShieldCheck, path: "/dashboard/true" },
-        { name: "Finpilot AI", icon: Bot , path: "/dashboard/bot" },
+        { name: "Finpilot AI ", icon: Bot , path: "/dashboard/bot" },
     { name: "Ingest Settings", icon: Database, path: "/dashboard/ingest" },
      { name: "Go Back", icon: ArrowLeft , path: "/" },
   ];
